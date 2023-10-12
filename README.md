@@ -1,2 +1,4 @@
-# ecs
-Simple ECS implementation built around donburi query system. 
+# coldBrew
+A very simple ECS scene manager built around [Donburi](https://github.com/yohamta/donburi) and [Ebiten](https://github.com/hajimehoshi/ebiten).
+
+
