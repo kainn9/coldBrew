@@ -1,8 +1,11 @@
 package coldBrew
 
+import "github.com/hajimehoshi/ebiten/v2"
+
 type Manager struct {
 	activeScene *Scene
 	sceneCache  *sceneCache
+	LoaderImage *ebiten.Image
 }
 
 type ManagerError struct {
@@ -13,10 +16,11 @@ func (e ManagerError) Error() string {
 	return e.msg
 }
 
-func NewManager(cacheLimit int) *Manager {
+func NewManager(cacheLimit int, loaderImage *ebiten.Image) *Manager {
 
 	return &Manager{
-		sceneCache: newSceneCache(cacheLimit),
+		sceneCache:  newSceneCache(cacheLimit),
+		LoaderImage: loaderImage,
 	}
 }
 
@@ -28,11 +32,11 @@ func (m *Manager) LoadScene(s SceneFace) error {
 		if sceneAdmin == m.activeScene {
 			return &ManagerError{msg: "attempting to load scene that is already active."}
 		}
+
 		m.sceneCache.add(key, m.activeScene)
 		m.activeScene = sceneAdmin
 
 	} else {
-
 		m.activeScene = s.New(m)
 	}
 

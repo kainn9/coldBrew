@@ -1,6 +1,8 @@
 package coldBrew
 
 import (
+	"sync"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 )
@@ -11,17 +13,48 @@ type SceneFace interface {
 }
 
 type Scene struct {
-	Manager *Manager
-	World   donburi.World
-	Systems []System
+	Height, Width int
+	Manager       *Manager
+	World         donburi.World
+	Systems       []System
+
+	mu        sync.Mutex
+	isLoading bool
+	isLoaded  bool
 }
 
-func NewScene(m *Manager) *Scene {
+func NewScene(m *Manager, height, width int) *Scene {
 
 	return &Scene{
 		Manager: m,
 		World:   donburi.NewWorld(),
+		Height:  height,
+		Width:   width,
 	}
+}
+
+func (s *Scene) SetIsLoading(loading bool) {
+	s.mu.Lock()
+	s.isLoading = loading
+	s.mu.Unlock()
+}
+
+func (s *Scene) SetIsLoaded(loaded bool) {
+	s.mu.Lock()
+	s.isLoaded = loaded
+	s.mu.Unlock()
+}
+
+func (s *Scene) IsCurrentlyLoading() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.isLoading
+}
+
+func (s *Scene) IsCurrentlyLoaded() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.isLoaded
 }
 
 func (s *Scene) AddEntity(components ...donburi.IComponentType) *donburi.Entry {
@@ -35,16 +68,46 @@ func (s *Scene) AddSystem(newSystem System) {
 }
 
 func (s *Scene) Sync() {
+
+	if !s.IsCurrentlyLoaded() {
+		return
+	}
+
 	s.processSystems(ClientType, nil, nil)
 }
 
 func (s *Scene) Sim(dt float64) {
+
+	if !s.IsCurrentlyLoaded() {
+		return
+	}
+
 	s.processSystems(SimType, dt, nil)
 }
 
 func (s *Scene) Draw(screen *ebiten.Image) {
 
-	s.processSystems(RenderType, 0, screen)
+	if !s.IsCurrentlyLoaded() {
+
+		loaderImage := s.Manager.LoaderImage
+		screen.DrawImage(loaderImage, &ebiten.DrawImageOptions{})
+
+		return
+	}
+
+	s.processSystems(RenderType, nil, screen)
+}
+
+func (s *Scene) Load() {
+
+	if s.IsCurrentlyLoaded() || s.IsCurrentlyLoading() {
+		return
+	}
+
+	s.SetIsLoading(true)
+	s.processSystems(LoaderType, nil, nil)
+	s.SetIsLoading(false)
+	s.SetIsLoaded(true)
 }
 
 func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
@@ -52,7 +115,6 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 	for _, system := range s.Systems {
 
 		query := &donburi.Query{}
-		customIteration := false
 
 		if q, ok := system.(Query); ok {
 			query = q.Query()
@@ -61,17 +123,28 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 			query = nil
 		}
 
-		if sysWithCustomIterMethod, ok := system.(CustomIteration); ok {
-			customIteration = sysWithCustomIterMethod.CustomIteration()
-		}
+		if sysType == LoaderType {
 
-		runOnce := query == nil || customIteration
+			if loaderSys, ok := system.(Load); ok {
+
+				if query == nil {
+					loaderSys.Load(nil)
+					continue
+				}
+
+				query.Each(s.World, func(entry *donburi.Entry) {
+					loaderSys.Load(entry)
+				})
+
+				continue
+			}
+		}
 
 		if sysType == ClientType {
 
 			if clientSys, ok := system.(Client); ok {
 
-				if runOnce {
+				if query == nil {
 					clientSys.Sync(nil)
 					continue
 				}
@@ -89,7 +162,7 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 
 			if simSys, ok := system.(Sim); ok {
 
-				if runOnce {
+				if query == nil {
 					simSys.Run(dt, nil)
 					continue
 				}
@@ -108,7 +181,7 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 
 			if renderSys, ok := system.(Render); ok {
 
-				if runOnce {
+				if query == nil {
 					renderSys.Draw(screen, nil)
 					continue
 				}

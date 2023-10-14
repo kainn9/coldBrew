@@ -13,6 +13,7 @@ const (
 	ClientType SystemType = iota
 	RenderType
 	SimType
+	LoaderType
 )
 
 // Query interface for systems that need to query a world for entities.
@@ -39,13 +40,7 @@ type Client interface {
 	Sync(entry *donburi.Entry)
 }
 
-// For multiple queries.
-type Queries interface {
-	Queries() []*donburi.Query
-}
-
-// For systems that need to iterate through entities in a different way
-// other than the default iteration, return true.
-type CustomIteration interface {
-	CustomIteration() bool
+// For loading assets.
+type Load interface {
+	Load(entry *donburi.Entry)
 }
