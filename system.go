@@ -16,10 +16,11 @@ const (
 	LoaderType
 )
 
-// Query interface for systems that need to query a world for entities.
-// By default, the system will iterate through all entities returned by the query.
-// If the system needs to iterate through the entities in a different way, it can implement
-// the CustomIteration interface.
+// Query interface for systems that need to query a world for a single type of entity.
+// By default, the system will iterate through all entities returned by the query and
+// run the main func(sim, render, etc) on each entry/entity.
+// If more robust querying or combinations of entities are required, do not 
+// implement this.
 type Query interface {
 	Query() *donburi.Query
 }
