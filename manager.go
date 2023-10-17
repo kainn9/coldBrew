@@ -27,14 +27,14 @@ func NewManager(cacheLimit int, loaderImage *ebiten.Image) *Manager {
 func (m *Manager) LoadScene(s SceneFace) error {
 	key := s.Index()
 
-	if ok, sceneAdmin := m.sceneCache.check(key); ok {
+	if ok, scene := m.sceneCache.check(key); ok {
 
-		if sceneAdmin == m.activeScene {
+		if scene == m.activeScene {
 			return &ManagerError{msg: "attempting to load scene that is already active."}
 		}
 
 		m.sceneCache.add(key, m.activeScene)
-		m.activeScene = sceneAdmin
+		m.activeScene = scene
 
 	} else {
 		m.activeScene = s.New(m)
