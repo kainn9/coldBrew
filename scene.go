@@ -23,7 +23,7 @@ type Scene struct {
 	isLoaded  bool
 }
 
-func NewScene(m *Manager, height, width int) *Scene {
+func NewScene(m *Manager, width, height int) *Scene {
 
 	return &Scene{
 		Manager: m,
