@@ -18,7 +18,7 @@ type Scene struct {
 	World         donburi.World
 	Systems       []System
 
-	mu        sync.Mutex
+	mu        *sync.Mutex
 	isLoading bool
 	isLoaded  bool
 }
@@ -30,6 +30,7 @@ func NewScene(m *Manager, height, width int) *Scene {
 		World:   donburi.NewWorld(),
 		Height:  height,
 		Width:   width,
+		mu:      &sync.Mutex{},
 	}
 }
 
