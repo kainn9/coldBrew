@@ -43,6 +43,6 @@ func (m *Manager) LoadScene(s SceneFace) error {
 	return nil
 }
 
-func (m *Manager) GetActiveScene() *Scene {
+func (m *Manager) ActiveScene() *Scene {
 	return m.activeScene
 }
