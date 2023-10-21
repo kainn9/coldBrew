@@ -133,8 +133,8 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 					continue
 				}
 
-				query.Each(s.World, func(entry *donburi.Entry) {
-					loaderSys.Load(entry)
+				query.Each(s.World, func(entity *donburi.Entry) {
+					loaderSys.Load(entity)
 				})
 
 				continue
@@ -150,8 +150,8 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 					continue
 				}
 
-				query.Each(s.World, func(entry *donburi.Entry) {
-					clientSys.Sync(entry)
+				query.Each(s.World, func(entity *donburi.Entry) {
+					clientSys.Sync(entity)
 				})
 				continue
 			}
@@ -168,8 +168,8 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 					continue
 				}
 
-				query.Each(s.World, func(entry *donburi.Entry) {
-					simSys.Run(dt, entry)
+				query.Each(s.World, func(entity *donburi.Entry) {
+					simSys.Run(dt, entity)
 				})
 
 				continue
@@ -187,8 +187,8 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 					continue
 				}
 
-				query.Each(s.World, func(entry *donburi.Entry) {
-					renderSys.Draw(screen, entry)
+				query.Each(s.World, func(entity *donburi.Entry) {
+					renderSys.Draw(screen, entity)
 				})
 				continue
 			}
