@@ -5,6 +5,7 @@ import "github.com/hajimehoshi/ebiten/v2"
 type Manager struct {
 	activeScene *Scene
 	sceneCache  *sceneCache
+	TickHandler *tickHandler
 	LoaderImage *ebiten.Image
 }
 
@@ -16,10 +17,11 @@ func (e ManagerError) Error() string {
 	return e.msg
 }
 
-func NewManager(cacheLimit int, loaderImage *ebiten.Image) *Manager {
+func NewManager(cacheLimit, maxTick int, loaderImage *ebiten.Image) *Manager {
 
 	return &Manager{
 		sceneCache:  newSceneCache(cacheLimit),
+		TickHandler: NewTickHandler(maxTick),
 		LoaderImage: loaderImage,
 	}
 }
