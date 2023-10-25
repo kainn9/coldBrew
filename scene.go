@@ -74,7 +74,7 @@ func (s *Scene) Sync() {
 		return
 	}
 
-	s.processSystems(ClientType, nil, nil)
+	s.processSystems(CLIENT_SYSTEM, nil, nil)
 }
 
 func (s *Scene) Sim(dt float64) {
@@ -83,7 +83,7 @@ func (s *Scene) Sim(dt float64) {
 		return
 	}
 
-	s.processSystems(SimType, dt, nil)
+	s.processSystems(SIM_SYSTEM, dt, nil)
 }
 
 func (s *Scene) Draw(screen *ebiten.Image) {
@@ -96,7 +96,7 @@ func (s *Scene) Draw(screen *ebiten.Image) {
 		return
 	}
 
-	s.processSystems(RenderType, nil, screen)
+	s.processSystems(RENDER_SYSTEM, nil, screen)
 }
 
 func (s *Scene) Load() {
@@ -106,7 +106,7 @@ func (s *Scene) Load() {
 	}
 
 	s.SetIsLoading(true)
-	s.processSystems(LoaderType, nil, nil)
+	s.processSystems(LOADER_SYSTEM, nil, nil)
 	s.SetIsLoading(false)
 	s.SetIsLoaded(true)
 }
@@ -124,7 +124,7 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 			query = nil
 		}
 
-		if sysType == LoaderType {
+		if sysType == LOADER_SYSTEM {
 
 			if loaderSys, ok := system.(Load); ok {
 
@@ -141,7 +141,7 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 			}
 		}
 
-		if sysType == ClientType {
+		if sysType == CLIENT_SYSTEM {
 
 			if clientSys, ok := system.(Client); ok {
 
@@ -157,7 +157,7 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 			}
 		}
 
-		if sysType == SimType {
+		if sysType == SIM_SYSTEM {
 
 			dt := args[0].(float64)
 
@@ -176,7 +176,7 @@ func (s *Scene) processSystems(sysType SystemType, args ...interface{}) {
 			}
 		}
 
-		if sysType == RenderType {
+		if sysType == RENDER_SYSTEM {
 
 			screen := args[1].(*ebiten.Image)
 

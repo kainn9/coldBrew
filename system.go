@@ -10,10 +10,10 @@ type System interface{}
 type SystemType int
 
 const (
-	ClientType SystemType = iota
-	RenderType
-	SimType
-	LoaderType
+	CLIENT_SYSTEM SystemType = iota
+	RENDER_SYSTEM
+	SIM_SYSTEM
+	LOADER_SYSTEM
 )
 
 // Query interface for systems that need to query a world for a single type of entity.
