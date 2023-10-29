@@ -37,11 +37,3 @@ func (t *tickHandler) TicksSinceNTicks(n int) int {
 
 	return t.currentTick - n
 }
-
-func (t *tickHandler) MillisecondsSinceNTicks(n int) int {
-	return t.TicksSinceNTicks(n) * 1000 / t.maxTick
-}
-
-func (t *tickHandler) SecondsSinceNTicks(n int) int {
-	return t.MillisecondsSinceNTicks(n) / 1000
-}
