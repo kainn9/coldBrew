@@ -35,11 +35,11 @@ func (m *Manager) LoadScene(s SceneFace) error {
 			return &ManagerError{msg: "attempting to load scene that is already active."}
 		}
 
-		m.sceneCache.add(key, m.activeScene)
 		m.activeScene = scene
 
 	} else {
 		m.activeScene = s.New(m)
+		m.sceneCache.add(key, m.activeScene)
 	}
 
 	return nil
