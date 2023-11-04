@@ -35,6 +35,11 @@ func (m *Manager) LoadScene(s SceneFace) error {
 			return &ManagerError{msg: "attempting to load scene that is already active."}
 		}
 
+		// TODO:
+		// Re-Index the cache buffer, so that the current scene is at the end of the buffer.
+		// This is because we want to keep N most recently accessed scenes, not N most recently
+		// loaded scenes. The distinction being that we may only load a scene once, but we may
+		// access it many times.
 		m.activeScene = scene
 
 	} else {
