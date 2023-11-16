@@ -1,22 +1,22 @@
 package coldBrew
 
-type tickHandler struct {
+type TickHandler struct {
 	currentTick int
 	maxTick     int
 }
 
-func NewTickHandler(maxTick int) *tickHandler {
-	return &tickHandler{
+func NewTickHandler(maxTick int) *TickHandler {
+	return &TickHandler{
 		currentTick: 0,
 		maxTick:     maxTick,
 	}
 }
 
-func (t *tickHandler) CurrentTick() int {
+func (t *TickHandler) CurrentTick() int {
 	return t.currentTick
 }
 
-func (t *tickHandler) IncrementTick() {
+func (t *TickHandler) IncrementTick() {
 	t.currentTick++
 
 	if t.currentTick >= t.maxTick {
@@ -25,7 +25,7 @@ func (t *tickHandler) IncrementTick() {
 
 }
 
-func (t *tickHandler) TicksSinceNTicks(n int) int {
+func (t *TickHandler) TicksSinceNTicks(n int) int {
 
 	if n < 0 || n >= t.maxTick {
 		return 0

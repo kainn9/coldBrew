@@ -5,7 +5,7 @@ import "github.com/hajimehoshi/ebiten/v2"
 type Manager struct {
 	activeScene *Scene
 	sceneCache  *sceneCache
-	TickHandler *tickHandler
+	TickHandler *TickHandler
 	LoaderImage *ebiten.Image
 }
 
