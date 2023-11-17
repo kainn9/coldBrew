@@ -47,6 +47,8 @@ func (m *Manager) LoadScene(s SceneFace) error {
 		m.sceneCache.add(key, m.activeScene)
 	}
 
+	m.activeScene.LastActiveTick = m.TickHandler.CurrentTick()
+
 	return nil
 }
 

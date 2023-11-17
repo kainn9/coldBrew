@@ -21,6 +21,8 @@ type Scene struct {
 	mu        *sync.Mutex
 	isLoading bool
 	isLoaded  bool
+
+	LastActiveTick int
 }
 
 func NewScene(m *Manager, width, height int) *Scene {
